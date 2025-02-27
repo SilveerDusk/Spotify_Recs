@@ -73,7 +73,7 @@ def top_songs_over_all_users(n=10):
 
 if __name__ == "__main__":
     # query_top_artists(10)
-    # query_most_active_users(39)
+    query_most_active_users(10)
     # query_user_top_artists(22)
-    top_songs_over_all_users()
+    # top_songs_over_all_users()
 
