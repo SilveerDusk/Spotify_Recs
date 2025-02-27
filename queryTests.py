@@ -69,11 +69,28 @@ def top_songs_over_all_users(n=10):
     for i, (title, artist) in enumerate(top_songs, 1):
         print(f"{i}. {title} by {artist}")
 
+def list_users_most_played_artist():
+    """List each user's most played artist with playtime."""
+    user_artist_counts = defaultdict(lambda: defaultdict(int))
+
+    # Map users to their artists and playtime
+    for user, song, playtime in zip(matrix.row, matrix.col, matrix.data):
+        artist = song_id_to_info[str(song)]["artist"]
+        user_artist_counts[user][artist] += playtime
+
+    print("User's Most Played Artists:")
+    for user, artist_dict in user_artist_counts.items():
+        most_played_artist = max(artist_dict.items(), key=lambda x: x[1])
+        artist, playtime = most_played_artist
+        print(f"User {user}: {artist} - {playtime * 0.001:.2f} secs played")
+
+
 
 
 if __name__ == "__main__":
-    # query_top_artists(10)
+    #query_top_artists(10)
     # query_most_active_users(39)
     # query_user_top_artists(22)
-    top_songs_over_all_users()
-
+    #top_songs_over_all_users()
+    #most_skipped_songs(100)
+    list_users_most_played_artist()
