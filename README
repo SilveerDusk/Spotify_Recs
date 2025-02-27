@@ -1,0 +1,24 @@
+To run this code, 
+
+Need to do several things:
+Actually, I think I can upload the matrix and dictionary to the github since its smaller.
+
+But incase a file, "user_song_matrix.npz" or the dictionary, "song_id_to_info.json" is NOT in your clone, do this:
+
+1. Need to grab the csv labeled "all_users_data.csv" in the shared google drive. 
+2. Skip to step 6 below.
+
+If you want to update the csv with more data follow these steps (I.E. restart with all new data)
+1. first import entire spotify_stream_data (Google Drive folder)
+2. next, remove other files from the spotify_stream_data like README and the csv containing the tracker info. 
+3. Next you want to create an empty folder called spotifyDatas
+4. Now that you have the output folder, run the zip_to_folder.py script
+5. then run mass_json_to_csv.py (Prepare for slow computer after this)
+6. Once computer recovers, run the csv_to_matrix.py script. This will create a file "user_song_matrix.npz"
+
+Now you should see a song_id_to_info.json file containing a dictionary along with a user_song_matrix.npz file which contains the sparse matrix.
+
+I've added some query tests in "queryTests.py" which we can continue adding weird queries too.
+
+
+

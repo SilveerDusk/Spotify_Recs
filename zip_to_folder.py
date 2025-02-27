@@ -1,46 +1,45 @@
 import os
 import zipfile
 import re
+from collections import defaultdict
 
-# Define paths
-ZIP_FOLDER = "spotify_stream_data"  # Folder containing the ZIP files
-OUTPUT_FOLDER = "spotifyDatas"  # Folder where all files will be extracted
+ZIP_FOLDER = "spotify_stream_data"  
+OUTPUT_FOLDER = "spotifyDatas"
 
-# Ensure output folder exists
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# Process each ZIP file
-for filename in os.listdir(ZIP_FOLDER):
+zip_files = sorted(os.listdir(ZIP_FOLDER), key=lambda f: int(re.search(r'\d+', f).group()) if re.search(r'\d+', f) else float('inf'))
+
+for filename in zip_files:
     if filename.endswith(".zip"):
         zip_path = os.path.join(ZIP_FOLDER, filename)
-        
-        # Extract number from ZIP filename (e.g., "spotify12.zip" → "12")
-        zip_number = re.search(r'\d+', filename)
-        zip_number = zip_number.group() if zip_number else "unknown"
+
+        # Extract user ID from ZIP filename (e.g., "spotify10.zip" → "10")
+        user_id_match = re.search(r'\d+', filename)
+        user_id = user_id_match.group() if user_id_match else "unknown"
 
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            file_count = defaultdict(int) 
+
             for file in zip_ref.namelist():
-                # Get just the filename, ignoring any directory structure inside the ZIP
                 base_filename = os.path.basename(file)
 
-                # Only extract files that start with "Streaming_History"
                 if not base_filename.startswith("Streaming_History"):
-                    continue  # Skip files that don't match
+                    continue
+
+                file_count[base_filename] += 1
+                internal_number = f"_{file_count[base_filename]}" if file_count[base_filename] > 1 else ""
 
                 file_name, file_ext = os.path.splitext(base_filename)
-                
-                # Append zip number to file name
-                new_file_name = f"{file_name}_{zip_number}{file_ext}"
+                new_file_name = f"{file_name}_user{user_id}{internal_number}{file_ext}"
                 extracted_path = os.path.join(OUTPUT_FOLDER, new_file_name)
 
-                # Rename if file already exists to avoid overwriting
                 base, ext = os.path.splitext(extracted_path)
                 counter = 1
                 while os.path.exists(extracted_path):
-                    extracted_path = f"{base}_{counter}{ext}"
+                    extracted_path = f"{base}_v{counter}{ext}"  
                     counter += 1
 
-                # Extract file
                 with zip_ref.open(file) as source, open(extracted_path, "wb") as target:
                     target.write(source.read())
 
