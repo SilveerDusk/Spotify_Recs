@@ -5,7 +5,23 @@ from collections import defaultdict
 
 matrix = load_npz("user_song_matrix.npz")
 
+print("Matrix shape:", matrix.shape)
+print("Number of non-zero entries:", matrix.nnz)
+print("Density:", matrix.nnz / (matrix.shape[0] * matrix.shape[1]))
+
+import matplotlib.pyplot as plt
+
+
+
+#print(matrix)
+array_matrix = matrix.toarray()
+with open("matrix_output.txt", "w") as f:
+    for row in array_matrix:
+        f.write(" ".join(map(str, row)) + "\n")
+
+
 song_play_counts = np.array(matrix.sum(axis=0)).flatten()
+
 
 with open("song_id_to_info.json", "r") as f:
     song_id_to_info = json.load(f)
@@ -88,9 +104,9 @@ def list_users_most_played_artist():
 
 
 if __name__ == "__main__":
-    #query_top_artists(10)
-    # query_most_active_users(39)
-    # query_user_top_artists(22)
-    #top_songs_over_all_users()
+    query_top_artists(10)
+    query_most_active_users(39)
+    query_user_top_artists(22)
+    top_songs_over_all_users()
     #most_skipped_songs(100)
     list_users_most_played_artist()

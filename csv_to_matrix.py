@@ -14,12 +14,17 @@ def process_large_csv(file_path, chunksize):
     song_counter = 0
     song_id_to_info = {}
 
-    for chunk in tqdm(pd.read_csv(file_path, usecols=["user_id", "master_metadata_track_name", "master_metadata_album_artist_name", "ms_played"], chunksize=chunksize)):
+    for chunk in tqdm(pd.read_csv(file_path, usecols=["user_id", "master_metadata_track_name", "master_metadata_album_artist_name", "ms_played", "skipped"], chunksize=chunksize)):
         for _, row in chunk.iterrows():
             user = row['user_id']
+            skipped = row['skipped']
             song = row['master_metadata_track_name']
             artist = row['master_metadata_album_artist_name']
             play_time = row['ms_played']
+            if skipped == True:
+                continue
+            if play_time < 3000:
+                continue
 
             if pd.isna(song) or pd.isna(artist):  
                 continue
